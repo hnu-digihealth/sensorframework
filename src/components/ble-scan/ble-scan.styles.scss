@@ -1,0 +1,19 @@
+:host{
+  display: grid;
+  width: 100%;
+  height: 100%;
+
+  ion-list{
+    width: 100%;
+    align-self: start;
+  }
+
+  ion-button{
+    align-self: center;
+  }
+
+  connection-spinner{
+    align-self: center;
+    justify-self: center;
+  }
+}

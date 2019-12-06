@@ -1,0 +1,72 @@
+:host{
+
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left:0;
+  right: 0;
+
+  .config-wrapper{
+    display: grid;
+    grid-template-areas: "title title title title" "config config config config" "cancel . . skip";
+    grid-column-gap: 12px;
+    background-color: white;
+    border-radius: 10px;
+    position: relative;
+    z-index: 999;
+    padding: 0px 20px 20px 20px;
+  }
+
+  .config-item{
+    //min-height: 600px;
+  }
+
+
+  .overlay-background{
+    position: absolute;
+    background-color: black;
+    opacity: 0.2;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 998;
+  }
+
+
+
+
+  ion-slides{
+    grid-area: config;
+    max-width: 350px !important;
+
+    ion-slide{
+      height: 400px;
+      overflow-y: auto;
+    }
+  }
+
+  ion-button{
+    width: min-content;
+  }
+
+  .btn-cancel{
+    grid-area: cancel;
+  }
+
+  .btn-skip{
+    grid-area: skip;
+
+  }
+
+  .btn-next{
+    grid-area: next;
+
+  }
+
+}

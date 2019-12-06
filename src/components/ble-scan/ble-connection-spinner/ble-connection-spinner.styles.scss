@@ -1,0 +1,108 @@
+:host{
+
+  --color-inactive: transparent;
+  --color-active: #00a2ed;
+  --border-width: 3px;
+  --size: 30px;
+
+  ion-icon{
+    width: calc(var(--size) - 2*var(--border-width));
+    height: calc(var(--size) - 2*var(--border-width));
+    fill: var(--color-active);
+  }
+
+  .spinner-direction-top{
+    display: flex;
+    flex-direction: column;
+
+    .outer{
+      transform: rotate(0deg);
+      order: 1;
+    }
+  }
+
+  .spinner-direction-bottom{
+    display: flex;
+    flex-direction: column;
+
+    .outer{
+      transform: rotate(180deg);
+      order: 2;
+    }
+  }
+
+  .spinner-direction-left{
+    display: flex;
+    align-items: center;
+
+    .outer{
+      transform: rotate(-90deg);
+      order: 1;
+    }
+
+  }
+
+  .spinner-direction-right{
+    display: flex;
+    align-items: center;
+
+    .outer{
+      transform: rotate(90deg);
+      order: 2;
+    }
+  }
+
+  div{
+    border-color: transparent;
+  }
+
+  .outer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    border-width: var(--border-width);
+    border-style: solid;
+    border-top-color: var(--color-inactive);
+    animation: indicate 2s ease-in-out 1s infinite;
+  }
+
+  .middle{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--size) - 4 * var(--border-width));
+    height: calc(var(--size) - 4 * var(--border-width));
+    border-radius: 50%;
+    border-width: var(--border-width);
+    border-style: solid;
+    border-top-color: var(--color-inactive);
+    animation: indicate 2s ease-in-out .5s infinite;
+  }
+
+  .inner{
+    width: calc(var(--size) - 8 * var(--border-width));
+    height: calc(var(--size) - 8 * var(--border-width));
+    border-radius: 50%;
+    border-width: var(--border-width);
+    border-style: solid;
+    border-top-color: var(--color-inactive);
+    animation: indicate 2s ease-in-out 0s infinite;
+  }
+
+  @keyframes indicate{
+    0%{
+      border-top-color: var(--color-inactive);
+    }
+    50%{
+      border-top-color: var(--color-active);
+    }
+    100%{
+      border-top-color: var(--color-inactive);
+    }
+  }
+}
+
+
