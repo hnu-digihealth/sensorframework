@@ -31,24 +31,50 @@ export class SensorComponent implements SensorHostElement{
   private listener: SensorListenerHandle;
 
 
-  private async start(){
+  @Method()
+  async pull(options?: any){
+    return await QuestionsysSensorManager.get(this.sensor, options);
+  }
+
+  @Method()
+  async push(options?: any, data?: any){
+    return await QuestionsysSensorManager.push(this.sensor, options, data);
+  }
+
+  @Method()
+  async presentUiConfig(config: SensorUIConfig){
+    this.uiConfig = config;
+    this.configAvailable = true;
+  }
+
+  async componentDidLoad() {
+
+    await QuestionsysSensorManager.start(this.sensor, this.scope === "local" ? this.element : undefined);
 
     switch (this.action) {
       case "watch": {
-        this.listener = await QuestionsysSensorManager.watchSensorData(this.sensor, this.options, (data: SampleData) => {
+        this.listener = await QuestionsysSensorManager.watch(this.sensor, this.options, (data: SampleData) => {
           console.log(this.sensor.toUpperCase(), this.action.toUpperCase(), data);
           this.sampleData.emit(data);
         });
         break;
       }
       case "get": {
-        const data = await QuestionsysSensorManager.getSensorData(this.sensor, this.options);
+        const data = await QuestionsysSensorManager.get(this.sensor, this.options);
         console.log(this.sensor.toUpperCase(), this.action.toUpperCase(), data);
         this.sampleData.emit(data);
         break;
       }
       case "push": {
-        await QuestionsysSensorManager.pushSensorData(this.sensor, this.options, null);
+        const data = await QuestionsysSensorManager.push(this.sensor, this.options, null);
+        console.log(this.sensor.toUpperCase(), this.action.toUpperCase(), data);
+        this.sampleData.emit(data);
+        break;
+      }
+      case "stream": {
+        const data = await QuestionsysSensorManager.stream(this.sensor, this.options);
+        console.log(this.sensor.toUpperCase(), this.action.toUpperCase(), data);
+        this.sampleData.emit(data);
         break;
       }
       default: {
@@ -59,34 +85,13 @@ export class SensorComponent implements SensorHostElement{
 
   }
 
-  @Method()
-  async pull(options?: any){
-    return await QuestionsysSensorManager.getSensorData(this.sensor, options);
-  }
-
-  @Method()
-  async push(options?: any, data?: any){
-    return await QuestionsysSensorManager.pushSensorData(this.sensor, options, data);
-  }
-
-  @Method()
-  async presentUiConfig(config: SensorUIConfig){
-    this.uiConfig = config;
-    this.configAvailable = true;
-  }
-
-  async componentDidLoad() {
-    await QuestionsysSensorManager.startSensor(this.sensor, this.scope === "local" ? this.element : undefined);
-    this.start();
-  }
-
 
   async componentDidUnload() {
     if(this.listener != undefined) {
       this.listener.remove();
     }
 
-    await QuestionsysSensorManager.stopSensor(this.sensor);
+    await QuestionsysSensorManager.stop(this.sensor);
   }
 
   render() {

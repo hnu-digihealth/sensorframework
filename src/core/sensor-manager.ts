@@ -1,14 +1,14 @@
 import {Sensor, SensorListenerHandle} from "./sensors/sensor";
-import {SensorRegistry} from "./sensor-registry";
+import {ISensorRegistry} from "./sensor-registry";
 import {SampleData} from "./sensors/sample-data";
 import {SensorHostElement} from "./sensor-host-element";
 
 
 class SensorManager {
 
-  constructor(private registry: SensorRegistry){}
+  constructor(private registry: ISensorRegistry){}
 
-  public async startSensor(sensorId: string, domRef?: SensorHostElement): Promise<void> {
+  public async start(sensorId: string, domRef?: SensorHostElement): Promise<void> {
 
     const sensor = this.getSensor(sensorId);
 
@@ -18,7 +18,7 @@ class SensorManager {
 
   }
 
-  public async stopSensor(sensorId: string): Promise<void>{
+  public async stop(sensorId: string): Promise<void>{
 
     const sensor = this.getSensor(sensorId);
 
@@ -28,7 +28,7 @@ class SensorManager {
 
   }
 
-  public async getSensorData(sensorId: string, options?: any): Promise<SampleData> {
+  public async get(sensorId: string, options?: any): Promise<SampleData> {
 
     const sensor = this.getSensor(sensorId);
 
@@ -38,7 +38,7 @@ class SensorManager {
     return null;
   }
 
-  public async watchSensorData(sensorId: string, options: any, onChange: (data: SampleData) => void): Promise<SensorListenerHandle>{
+  public async watch(sensorId: string, options: any, onChange: (data: SampleData) => void): Promise<SensorListenerHandle>{
 
     const sensor = this.getSensor(sensorId);
 
@@ -48,7 +48,7 @@ class SensorManager {
     return null;
   }
 
-  public async pushSensorData(sensorId: string, options: any, data: any): Promise<any>{
+  public async push(sensorId: string, options: any, data: any): Promise<any>{
 
     const sensor = this.getSensor(sensorId);
 
@@ -60,26 +60,28 @@ class SensorManager {
 
   };
 
+  public async stream(sensorId: string, options: any): Promise<any> {
+
+    const sensor = this.getSensor(sensorId);
+
+    if(sensor != null){
+      return await sensor.getStreamData(options);
+    }
+
+    return null;
+  }
+
   public registerSensor<T extends Sensor>(sensor: T): void {
 
     if(!(sensor instanceof Sensor)){
       throw new Error("Sensors must inherit from Sensor base class");
     }
 
-    this.registry[sensor.name] = sensor;
+    this.registry.registerSensor(sensor);
   }
 
-  private isSensorAvailable(id: string): boolean {
-    return !!this.registry[id];
-  }
-
-  private getSensor(id: string): Sensor {
-
-    if(this.isSensorAvailable(id)){
-      return this.registry[id];
-    }
-
-    return null;
+  private getSensor(id: string): Sensor | null {
+    return this.registry.getSensor(id) || null;
   }
 
 }

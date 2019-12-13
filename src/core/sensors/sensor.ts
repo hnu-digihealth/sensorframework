@@ -134,6 +134,27 @@ export abstract class Sensor{
     }
   }
 
+  async getStreamData(options?: any): Promise<any> {
+
+    if(!this.canStream) {
+      console.warn(`${this.name} does not support the following action: STREAM`);
+      return ;
+    }
+
+    if(this.canStream && this.onStream == undefined) {
+      console.warn(`Missing onStream implementation for ${this.name}`);
+      return null;
+    }
+
+    try {
+      const data = await this.onStream(options);
+      return this.createSampleData(data);
+    } catch (e) {
+      this.onSensorError(e);
+    }
+
+  }
+
   onError(handler: ListenerCallback<Error>): SensorListenerHandle {
     return this.addListener("error", handler);
   };
@@ -147,6 +168,8 @@ export abstract class Sensor{
   protected async onPull?(options?: any): Promise<any>;
 
   protected async onPush?(options?: any, data?: any): Promise<any>;
+
+  protected async onStream?(options?: any): Promise<any>;
 
   protected async requestUserConfiguration(config: SensorUIConfig): Promise<any>{
     return new Promise(async (resolve, reject) => {
@@ -242,9 +265,9 @@ export abstract class Sensor{
 
   }
 
-  private createSampleData(data: any): SampleData {
+  private createSampleData<T>(data: T): SampleData<T> {
     return {
-      data: {...data},
+      data,
       timestamp: Date.now(),
       sensor: this.name
     }
@@ -268,6 +291,10 @@ export abstract class Sensor{
 
   public get canPush(): boolean {
     return this.config.actions.push;
+  }
+
+  public get canStream(): boolean {
+    return this.config.actions.stream;
   }
 
   public get isWatching(): boolean {

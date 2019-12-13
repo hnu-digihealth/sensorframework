@@ -1,9 +1,9 @@
-export interface SampleData {
+export interface SampleData<T = any> {
 
   sensor: string;
 
   timestamp: number;
 
-  data: {[prop: string]: any};
+  data: T;
 
 }

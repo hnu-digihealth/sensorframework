@@ -20,37 +20,61 @@ import {
   Proximity,
   RelativeHumidity,
   RelativeOrientation,
-  Http
+  Http, Microphone
 } from "./sensors";
 import {Sensor} from "./sensors/sensor";
 
-interface SensorRegistry{
- [id:string]: Sensor;
+interface ISensorRegistry {
+
+  getSensor(name: string): Sensor;
+
+  isSensorAvailable(name: string): boolean;
+
+  registerSensor(sensor: Sensor): void;
+
 }
 
-const QuestionSysSensorRegistry: SensorRegistry = {
-  [AbsoluteOrientation.name]: AbsoluteOrientation,
-  [Accelerometer.name]: Accelerometer,
-  [AmbientLight.name]: AmbientLight,
-  [AmbientPressure.name]: AmbientPressure,
-  [AmbientTemperature.name]: AmbientTemperature,
-  [Gravity.name]: Gravity,
-  [Gyroscope.name]: Gyroscope,
-  [MagneticField.name]: MagneticField,
-  [LinearAcceleration.name]: LinearAcceleration,
-  [Proximity.name]: Proximity,
-  [RelativeHumidity.name]: RelativeHumidity,
-  [RelativeOrientation.name]: RelativeOrientation,
-  [NetworkState.name]: NetworkState,
-  [Location.name]: Location,
-  [BleBloodPressure.name]: BleBloodPressure,
-  [BleBodyComposition.name]: BleBodyComposition,
-  [BleHeartRate.name]: BleHeartRate,
-  [BlePlxContinuous.name]: BlePlxContinuous,
-  [BlePlxSpotCheck.name]: BlePlxSpotCheck,
-  [BleTemperature.name]: BleTemperature,
-  [BleWeightScale.name]: BleWeightScale,
-  [Http.name]: Http
-};
+class SensorRegistry implements ISensorRegistry{
 
-export {SensorRegistry, QuestionSysSensorRegistry}
+  private registry: { [name: string]: Sensor } = {
+    [AbsoluteOrientation.name]: AbsoluteOrientation,
+    [Accelerometer.name]: Accelerometer,
+    [AmbientLight.name]: AmbientLight,
+    [AmbientPressure.name]: AmbientPressure,
+    [AmbientTemperature.name]: AmbientTemperature,
+    [Gravity.name]: Gravity,
+    [Gyroscope.name]: Gyroscope,
+    [MagneticField.name]: MagneticField,
+    [LinearAcceleration.name]: LinearAcceleration,
+    [Proximity.name]: Proximity,
+    [RelativeHumidity.name]: RelativeHumidity,
+    [RelativeOrientation.name]: RelativeOrientation,
+    [NetworkState.name]: NetworkState,
+    [Location.name]: Location,
+    [BleBloodPressure.name]: BleBloodPressure,
+    [BleBodyComposition.name]: BleBodyComposition,
+    [BleHeartRate.name]: BleHeartRate,
+    [BlePlxContinuous.name]: BlePlxContinuous,
+    [BlePlxSpotCheck.name]: BlePlxSpotCheck,
+    [BleTemperature.name]: BleTemperature,
+    [BleWeightScale.name]: BleWeightScale,
+    [Http.name]: Http,
+    [Microphone.name]: Microphone
+  };
+
+  public getSensor(name: string): Sensor {
+    return this.registry[name];
+  }
+
+  public isSensorAvailable(name: string) {
+    return this.registry[name] !== undefined;
+  }
+
+  public registerSensor(sensor: Sensor): void {
+    this.registry[sensor.name] = sensor;
+  }
+
+}
+
+const QuestionSysSensorRegistry: ISensorRegistry = new SensorRegistry();
+export {ISensorRegistry, QuestionSysSensorRegistry}

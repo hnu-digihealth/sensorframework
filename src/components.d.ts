@@ -36,7 +36,7 @@ export namespace Components {
     'action': "watch" | "get" | "push" | "stream";
     'options': any;
     'presentUiConfig': (config: SensorUIConfig) => Promise<void>;
-    'pull': (options?: any) => Promise<SampleData>;
+    'pull': (options?: any) => Promise<SampleData<any>>;
     'push': (options?: any, data?: any) => Promise<any>;
     'scope': "global" | "local";
     'sensor': string;
