@@ -8,28 +8,32 @@ const {MediaRecorder} = Plugins;
 
 export abstract class MediaRecordingSensor extends Sensor {
 
+  private recordings: Map<string, File> = new Map<string, File>();
   private id: string;
-  private resolve: (file: File) => void;
-
-  private promise: Promise<File> = new Promise<File>((resolve) => {
-    this.resolve = resolve;
-  });
 
   protected constructor(config: SensorConfig){
     super(config);
   }
 
-  protected async onStream(options: MediaRecorderOptions): Promise<File> {
+  protected async onRecord(options: MediaRecorderOptions): Promise<string> {
+
     const {id} = await MediaRecorder.startRecording(options);
     this.id = id;
+    this.recordings.set(this.id, null);
 
-    return this.promise;
+    return this.id;
   }
 
   protected async onStop(): Promise<void>{
     const file = await MediaRecorder.stopRecording({id: this.id});
-    this.resolve(file);
+    this.recordings.set(this.id, file);
     return ;
+  }
+
+  public getRecording(id: string): File {
+    const recording = this.recordings.get(id);
+    this.recordings.delete(id);
+    return recording || null;
   }
 
 }

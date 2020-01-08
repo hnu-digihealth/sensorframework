@@ -6,7 +6,7 @@ class MicrophoneSensor extends MediaRecordingSensor{
     super({
       name: "microphone",
       actions: {
-        stream: true
+        record: true
       }
     })
   }

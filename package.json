@@ -32,6 +32,6 @@
     "@ionic/core": "^4.11.5",
     "cap-bluetooth-low-energy-client": "^1.0.0",
     "cap-media-recorder": "file:../cap-media-recorder",
-    "cap-sensing-kit": "^1.0.0"
+    "cap-sensing-kit": "^1.0.1"
   }
 }

@@ -1,4 +1,4 @@
-import {Sensor, SensorListenerHandle} from "./sensors/sensor";
+import {ListenerCallback, Sensor, SensorListenerHandle} from "./sensors/sensor";
 import {ISensorRegistry} from "./sensor-registry";
 import {SampleData} from "./sensors/sample-data";
 import {SensorHostElement} from "./sensor-host-element";
@@ -60,15 +60,37 @@ class SensorManager {
 
   };
 
-  public async stream(sensorId: string, options: any): Promise<any> {
+  public async record(sensorId: string, options: any): Promise<string> {
 
     const sensor = this.getSensor(sensorId);
 
     if(sensor != null){
-      return await sensor.getStreamData(options);
+      return await sensor.record(options);
     }
 
     return null;
+  }
+
+  public getRecording(sensorId: string, recordingId: string): File {
+    const sensor = this.getSensor(sensorId);
+
+    if(sensor != null && sensor.getRecording != undefined){
+      return sensor.getRecording(recordingId);
+    }
+
+    return null;
+  }
+
+  public async onSensorError(sensorId: string, onError: ListenerCallback<Error>): Promise<SensorListenerHandle> {
+
+    const sensor = this.getSensor(sensorId);
+
+    if(sensor != null){
+      return await sensor.onError(onError);
+    }
+
+    return null;
+
   }
 
   public registerSensor<T extends Sensor>(sensor: T): void {

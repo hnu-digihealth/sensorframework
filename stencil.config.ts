@@ -4,13 +4,12 @@ import {readFileSync} from 'fs';
 
 export const config: Config = {
   namespace: 'sensors',
-  devServer: {
-    address: "0.0.0.0",
+  /*devServer: {
     https: {
       key: readFileSync("localhost.key", {encoding: "utf-8"}),
       cert: readFileSync("localhost.cert", {encoding: "utf-8"})
     }
-  },
+  },*/
   plugins: [
     sass()
   ],

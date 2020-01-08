@@ -23,7 +23,6 @@ class NetworkStatusSensor extends Sensor {
   }
 
   async onWatch(): Promise<void> {
-    console.log(this);
     this.handler = Network.addListener("networkStatusChange", (status: NetworkStatus) => {
       this.onSensorDataChanged(status);
     });

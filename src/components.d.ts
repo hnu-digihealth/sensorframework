@@ -33,7 +33,7 @@ export namespace Components {
     'addConfig': (toAdd: SensorUIConfig) => Promise<void>;
   }
   interface SensorElement {
-    'action': "watch" | "get" | "push" | "stream";
+    'action': "watch" | "get" | "push" | "record";
     'options': any;
     'presentUiConfig': (config: SensorUIConfig) => Promise<void>;
     'pull': (options?: any) => Promise<SampleData<any>>;
@@ -97,7 +97,8 @@ declare namespace LocalJSX {
   }
   interface SensorConfiguration {}
   interface SensorElement {
-    'action'?: "watch" | "get" | "push" | "stream";
+    'action'?: "watch" | "get" | "push" | "record";
+    'onError'?: (event: CustomEvent<Error>) => void;
     'onSampleData'?: (event: CustomEvent<SampleData>) => void;
     'options'?: any;
     'scope'?: "global" | "local";

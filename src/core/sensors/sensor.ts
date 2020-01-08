@@ -1,6 +1,5 @@
 import {SampleData} from "./sample-data";
 import {mergeConfig, SensorConfig} from "./sensor-config";
-import {QuestionsysSensorManager} from "../sensor-manager";
 import {SensorUIConfig} from "../../components/sensor-configuration/sensor-configuration.component";
 import {SensorHostElement} from "../sensor-host-element";
 
@@ -17,6 +16,7 @@ export abstract class Sensor{
   private state: {[key: string]: any} = {
     isRunning: false,
     isWatching: false,
+    isRecording: false,
   };
 
   private listeners: {[eventName: string]: ListenerCallback<any>[]} = {};
@@ -134,28 +134,37 @@ export abstract class Sensor{
     }
   }
 
-  async getStreamData(options?: any): Promise<any> {
+  async record(options?: any): Promise<string> {
 
-    if(!this.canStream) {
+    if(!this.canRecord) {
       console.warn(`${this.name} does not support the following action: STREAM`);
       return ;
     }
 
-    if(this.canStream && this.onStream == undefined) {
+    if(this.canRecord && this.onRecord == undefined) {
       console.warn(`Missing onStream implementation for ${this.name}`);
       return null;
     }
 
     try {
-      const data = await this.onStream(options);
-      return this.createSampleData(data);
+
+      if(!this.isRecording) {
+        const recordingId = await this.onRecord(options);
+        this.state = {
+          ...this.state,
+          isRecording: true,
+        }
+
+        return recordingId;
+      }
+
     } catch (e) {
       this.onSensorError(e);
     }
 
   }
 
-  onError(handler: ListenerCallback<Error>): SensorListenerHandle {
+  public async onError(handler: ListenerCallback<Error>): Promise<SensorListenerHandle> {
     return this.addListener("error", handler);
   };
 
@@ -169,7 +178,9 @@ export abstract class Sensor{
 
   protected async onPush?(options?: any, data?: any): Promise<any>;
 
-  protected async onStream?(options?: any): Promise<any>;
+  protected async onRecord?(options?: any): Promise<string>;
+
+  public getRecording?(id: string): File;
 
   protected async requestUserConfiguration(config: SensorUIConfig): Promise<any>{
     return new Promise(async (resolve, reject) => {
@@ -273,10 +284,6 @@ export abstract class Sensor{
     }
   }
 
-  public get manager(){
-    return QuestionsysSensorManager;
-  }
-
   public get name(): string {
     return this.config.name;
   }
@@ -293,12 +300,16 @@ export abstract class Sensor{
     return this.config.actions.push;
   }
 
-  public get canStream(): boolean {
-    return this.config.actions.stream;
+  public get canRecord(): boolean {
+    return this.config.actions.record;
   }
 
   public get isWatching(): boolean {
     return this.state.isWatching;
+  }
+
+  public get isRecording(): boolean {
+    return this.state.isRecording;
   }
 
   public get isRunning(): boolean {

@@ -20,7 +20,9 @@ import {
   Proximity,
   RelativeHumidity,
   RelativeOrientation,
-  Http, Microphone
+  Http,
+  Microphone,
+  VideoRecorder
 } from "./sensors";
 import {Sensor} from "./sensors/sensor";
 
@@ -59,7 +61,8 @@ class SensorRegistry implements ISensorRegistry{
     [BleTemperature.name]: BleTemperature,
     [BleWeightScale.name]: BleWeightScale,
     [Http.name]: Http,
-    [Microphone.name]: Microphone
+    [Microphone.name]: Microphone,
+    [VideoRecorder.name]: VideoRecorder
   };
 
   public getSensor(name: string): Sensor {

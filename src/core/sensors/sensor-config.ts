@@ -6,7 +6,7 @@ export interface SensorConfig {
     pull?: boolean,
     push?: boolean,
     watch?: boolean,
-    stream?: boolean
+    record?: boolean
   };
 }
 
@@ -16,7 +16,7 @@ const SensorDefaultConfig: SensorConfig = {
     pull: false,
     push: false,
     watch: false,
-    stream: false
+    record: false
   }
 };
 
@@ -30,7 +30,7 @@ export const mergeConfig = (config: SensorConfig): SensorConfig => {
       push: actions.push ? actions.push : SensorDefaultConfig.actions.push,
       pull: actions.pull ? actions.pull : SensorDefaultConfig.actions.pull,
       watch: actions.watch ? actions.watch : SensorDefaultConfig.actions.watch,
-      stream: actions.stream ? actions.stream : SensorDefaultConfig.actions.stream
+      record: actions.record ? actions.record : SensorDefaultConfig.actions.record
     }
   };
 

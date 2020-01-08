@@ -16,7 +16,7 @@ export class SensorComponent implements SensorHostElement{
 
   @Prop() sensor: string;
 
-  @Prop() action: "watch" | "get" | "push" | "stream";
+  @Prop() action: "watch" | "get" | "push" | "record";
 
   @Prop() scope: "global" | "local" = "global";
 
@@ -24,11 +24,17 @@ export class SensorComponent implements SensorHostElement{
 
   @Event() sampleData: EventEmitter<SampleData>;
 
+  @Event() error: EventEmitter<Error>;
+
   @State() configAvailable: boolean = false;
 
   private uiConfig: SensorUIConfig;
 
   private listener: SensorListenerHandle;
+
+  private errorListener: SensorListenerHandle;
+
+  private recordingId: string;
 
 
   @Method()
@@ -48,6 +54,13 @@ export class SensorComponent implements SensorHostElement{
   }
 
   async componentDidLoad() {
+
+    this.errorListener = await QuestionsysSensorManager.onSensorError(this.sensor, (error: Error) => {
+      console.log(error);
+      this.error.emit(error);
+    });
+
+    console.log(this.errorListener);
 
     await QuestionsysSensorManager.start(this.sensor, this.scope === "local" ? this.element : undefined);
 
@@ -71,10 +84,8 @@ export class SensorComponent implements SensorHostElement{
         this.sampleData.emit(data);
         break;
       }
-      case "stream": {
-        const data = await QuestionsysSensorManager.stream(this.sensor, this.options);
-        console.log(this.sensor.toUpperCase(), this.action.toUpperCase(), data);
-        this.sampleData.emit(data);
+      case "record": {
+        this.recordingId = await QuestionsysSensorManager.record(this.sensor, this.options);
         break;
       }
       default: {
@@ -91,7 +102,17 @@ export class SensorComponent implements SensorHostElement{
       this.listener.remove();
     }
 
+    if(this.errorListener != undefined){
+      this.errorListener.remove();
+    }
+
     await QuestionsysSensorManager.stop(this.sensor);
+
+    if(this.action === "record") {
+      const recording = QuestionsysSensorManager.getRecording(this.sensor, this.recordingId);
+      //@ts-ignore;
+      this.sampleData.emit(recording)
+    }
   }
 
   render() {
@@ -100,9 +121,11 @@ export class SensorComponent implements SensorHostElement{
 
       const DynamicConfigComponent = this.uiConfig.component;
 
-      return <DynamicConfigComponent {...this.uiConfig.properties}
-                                     onSuccess={(data) => { this.uiConfig.success(data); this.configAvailable = false }}
-                                     onError={(error) => {this.uiConfig.error(error); this.configAvailable = false}}/>
+      return <DynamicConfigComponent
+                {...this.uiConfig.properties}
+                onSuccess={(data) => { this.uiConfig.success(data); this.configAvailable = false }}
+                onError={(error) => {this.uiConfig.error(error); this.configAvailable = false}}
+             />
 
     }
 
