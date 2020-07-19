@@ -95,20 +95,20 @@ export abstract class Sensor{
     }
   }
 
-  async pull(options?: any): Promise<SampleData> {
+  async get(options?: any): Promise<SampleData> {
 
-    if(!this.canPull){
+    if(!this.canGet){
       console.warn(`${this.name} does not support the following action: PULL`);
       return null;
     }
 
-    if(this.canPull && this.onPull == undefined){
+    if(this.canGet && this.onGet == undefined){
       console.warn(`Missing onPull implementation for ${this.name}`);
       return null;
     }
 
     try {
-      const data = await this.onPull(options);
+      const data = await this.onGet(options);
       return this.createSampleData(data);
     }catch (e) {
       this.onSensorError(e);
@@ -136,7 +136,7 @@ export abstract class Sensor{
 
   async record(options?: any): Promise<string> {
 
-    if(!this.canRecord) {
+      if(!this.canRecord) {
       console.warn(`${this.name} does not support the following action: STREAM`);
       return ;
     }
@@ -174,7 +174,7 @@ export abstract class Sensor{
 
   protected async onWatch?(options?: any): Promise<void>;
 
-  protected async onPull?(options?: any): Promise<any>;
+  protected async onGet?(options?: any): Promise<any>;
 
   protected async onPush?(options?: any, data?: any): Promise<any>;
 
@@ -292,8 +292,8 @@ export abstract class Sensor{
     return this.config.actions.watch;
   }
 
-  public get canPull(): boolean {
-    return this.config.actions.pull;
+  public get canGet(): boolean {
+    return this.config.actions.get;
   }
 
   public get canPush(): boolean {

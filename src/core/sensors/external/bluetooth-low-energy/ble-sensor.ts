@@ -4,7 +4,7 @@ import {SensorConfig} from "../../sensor-config";
 import {Plugins} from "@capacitor/core";
 import {
   BluetoothGATTCharacteristicReadOptions,
-  BluetoothGATTCharacteristics, BluetoothGATTNotificationOptions,
+  BluetoothGATTCharacteristics, BluetoothGATTCharacteristicWriteOptions, BluetoothGATTNotificationOptions,
   BluetoothGATTPeripheral,
   BluetoothGATTServices,
   Callbacks
@@ -93,7 +93,7 @@ export abstract class BleSensor extends ExternalSensor{
 
   }
 
-  protected async onPull(): Promise<any>{
+  protected async onGet(): Promise<any>{
 
     const readOptions: BluetoothGATTCharacteristicReadOptions = {
       id: this.device.id,
@@ -102,6 +102,31 @@ export abstract class BleSensor extends ExternalSensor{
     };
 
     const {value} = await BluetoothLEClient.read(readOptions);
+    const raw = value;
+
+    if(Callbacks[this.characteristicUUID.toString()] != undefined){
+
+      const processValue = Callbacks[this.characteristicUUID.toString()];
+      const processed = processValue(raw);
+
+      return {processed, raw};
+    }
+
+    return {raw};
+
+  }
+
+  protected async onPush(options:any = {}, data: string){
+
+    const writeOptions: BluetoothGATTCharacteristicWriteOptions = {
+      id: this.device.id,
+      service: this.serviceUUID,
+      characteristic: this.characteristicUUID,
+      value: data
+    };
+
+    const {value} = await BluetoothLEClient.write(writeOptions);
+
     const raw = value;
 
     if(Callbacks[this.characteristicUUID.toString()] != undefined){

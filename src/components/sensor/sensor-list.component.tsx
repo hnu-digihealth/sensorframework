@@ -15,7 +15,7 @@ export class SensorListComponent {
 
   render(){
     return [
-      <sensor-element sensor="video" action="record" options={{video: true}} onSampleData={(event) => this.log(event.detail)} />,
+      <sensor-element sensor="ble-heart-rate" action="watch" onSampleData={(event) => this.log(event.detail)} />,
     ];
   }
 }

@@ -7,13 +7,13 @@ class HttpSensor extends Sensor{
     super({
       name: "http",
       actions: {
-        pull: true,
+        get: true,
         push: true
       }
     });
   }
 
-  async onPull(options: HttpOptions){
+  protected async onGet(options: HttpOptions){
 
     let {uri, params, headers, mode , cache} = options;
 
@@ -70,7 +70,17 @@ class HttpSensor extends Sensor{
     }
   }
 
-  async onPush(options?:any, data?:any){
+  protected async onPush(options?:any, data?:any){
+
+    let {uri, headers, mode , cache} = options;
+
+    const response = await fetch(uri, {
+      method: "POST",
+      body: data,
+      headers: new Headers(headers),
+      mode,
+      cache
+    });
     console.log(options, data);
   }
 

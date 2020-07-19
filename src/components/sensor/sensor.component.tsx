@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Method, Event, Prop, Element, State, h} from "@stencil/core";
 import {SensorListenerHandle} from "../../core/sensors/sensor";
 import {SampleData} from "../../core/sensors/sample-data";
-import {QuestionsysSensorManager} from "../../core/sensor-manager";
+import {SensorFrameworkManager} from "../../core";
 import {SensorUIConfig} from "../sensor-configuration/sensor-configuration.component";
 import {SensorHostElement} from "../../core/sensor-host-element";
 
@@ -39,12 +39,12 @@ export class SensorComponent implements SensorHostElement{
 
   @Method()
   async pull(options?: any){
-    return await QuestionsysSensorManager.get(this.sensor, options);
+    return await SensorFrameworkManager.get(this.sensor, options);
   }
 
   @Method()
   async push(options?: any, data?: any){
-    return await QuestionsysSensorManager.push(this.sensor, options, data);
+    return await SensorFrameworkManager.push(this.sensor, options, data);
   }
 
   @Method()
@@ -55,37 +55,37 @@ export class SensorComponent implements SensorHostElement{
 
   async componentDidLoad() {
 
-    this.errorListener = await QuestionsysSensorManager.onSensorError(this.sensor, (error: Error) => {
+    this.errorListener = await SensorFrameworkManager.onSensorError(this.sensor, (error: Error) => {
       console.log(error);
       this.error.emit(error);
     });
 
     console.log(this.errorListener);
 
-    await QuestionsysSensorManager.start(this.sensor, this.scope === "local" ? this.element : undefined);
+    await SensorFrameworkManager.start(this.sensor, this.scope === "local" ? this.element : undefined);
 
     switch (this.action) {
       case "watch": {
-        this.listener = await QuestionsysSensorManager.watch(this.sensor, this.options, (data: SampleData) => {
+        this.listener = await SensorFrameworkManager.watch(this.sensor, this.options, (data: SampleData) => {
           console.log(this.sensor.toUpperCase(), this.action.toUpperCase(), data);
           this.sampleData.emit(data);
         });
         break;
       }
       case "get": {
-        const data = await QuestionsysSensorManager.get(this.sensor, this.options);
+        const data = await SensorFrameworkManager.get(this.sensor, this.options);
         console.log(this.sensor.toUpperCase(), this.action.toUpperCase(), data);
         this.sampleData.emit(data);
         break;
       }
       case "push": {
-        const data = await QuestionsysSensorManager.push(this.sensor, this.options, null);
+        const data = await SensorFrameworkManager.push(this.sensor, this.options, null);
         console.log(this.sensor.toUpperCase(), this.action.toUpperCase(), data);
         this.sampleData.emit(data);
         break;
       }
       case "record": {
-        this.recordingId = await QuestionsysSensorManager.record(this.sensor, this.options);
+        this.recordingId = await SensorFrameworkManager.record(this.sensor, this.options);
         break;
       }
       default: {
@@ -106,10 +106,10 @@ export class SensorComponent implements SensorHostElement{
       this.errorListener.remove();
     }
 
-    await QuestionsysSensorManager.stop(this.sensor);
+    await SensorFrameworkManager.stop(this.sensor);
 
     if(this.action === "record") {
-      const recording = QuestionsysSensorManager.getRecording(this.sensor, this.recordingId);
+      const recording = SensorFrameworkManager.getRecording(this.sensor, this.recordingId);
       //@ts-ignore;
       this.sampleData.emit(recording)
     }

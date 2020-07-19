@@ -4,7 +4,13 @@ export interface BleBodyCompositionData extends BleSensorData{
 
   processed: {
 
-    units: {weight: string, height: string};
+    units: {
+
+      weight: string,
+
+      height: string
+      
+    };
 
     bodyFatPercentage: number;
 

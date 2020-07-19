@@ -1,7 +1,7 @@
 import {InternalSensor} from "../internal-sensor";
 import {SensorType} from "cap-sensing-kit";
 
-class AbsoluteOrientationSensor extends InternalSensor{
+class AbsoluteOrientationSensor extends InternalSensor {
 
   protected type = SensorType.ABSOLUTE_ORIENTATION;
 

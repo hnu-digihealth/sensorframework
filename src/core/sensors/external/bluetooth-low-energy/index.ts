@@ -5,5 +5,6 @@ import {BlePlxContinuous} from "./ble-plx-continuous/ble-plx-continuous.sensor";
 import {BlePlxSpotCheck} from "./ble-plx-spot-check/ble-plx-spot-check.sensor";
 import {BleTemperature} from "./ble-temperature/ble-temperature.sensor";
 import {BleWeightScale} from "./ble-weight-scale/ble-weight-scale.sensor";
+import {BleSensor} from "./ble-sensor";
 
-export {BleWeightScale, BleTemperature, BlePlxSpotCheck, BlePlxContinuous, BleHeartRate, BleBodyComposition, BleBloodPressure};
+export {BleWeightScale, BleTemperature, BlePlxSpotCheck, BlePlxContinuous, BleHeartRate, BleBodyComposition, BleBloodPressure, BleSensor};

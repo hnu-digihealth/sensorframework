@@ -79,5 +79,5 @@ class SensorRegistry implements ISensorRegistry{
 
 }
 
-const QuestionSysSensorRegistry: ISensorRegistry = new SensorRegistry();
-export {ISensorRegistry, QuestionSysSensorRegistry}
+const SensorFrameworkRegistry: ISensorRegistry = new SensorRegistry();
+export {ISensorRegistry, SensorFrameworkRegistry}

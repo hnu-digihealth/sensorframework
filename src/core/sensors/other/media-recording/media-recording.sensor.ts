@@ -6,7 +6,7 @@ import {MediaRecorderOptions} from "cap-media-recorder";
 
 const {MediaRecorder} = Plugins;
 
-export abstract class MediaRecordingSensor extends Sensor {
+export abstract class MediaRecordingSensor extends Sensor{
 
   private recordings: Map<string, File> = new Map<string, File>();
   private id: string;
@@ -30,10 +30,11 @@ export abstract class MediaRecordingSensor extends Sensor {
     return ;
   }
 
-  public getRecording(id: string): File {
+  public getRecording(id: string): any {
     const recording = this.recordings.get(id);
+    const uri = URL.createObjectURL(recording);
     this.recordings.delete(id);
-    return recording || null;
+    return {recording , uri} || null;
   }
 
 }

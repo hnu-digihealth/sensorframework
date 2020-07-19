@@ -3,7 +3,7 @@ import {Plugins, GeolocationOptions, GeolocationPosition} from "@capacitor/core"
 import {GeolocationData} from "./geolocation.data";
 const {Geolocation} = Plugins;
 
-class GeolocationSensor extends Sensor {
+class GeolocationSensor extends Sensor{
 
   private callbackId: string;
 
@@ -11,13 +11,13 @@ class GeolocationSensor extends Sensor {
     super({
       name: "geolocation",
       actions: {
-        pull: true,
+        get: true,
         watch: true
       }
     });
   }
 
-  async onStop(): Promise<void> {
+  protected async onStop(): Promise<void> {
     const id = this.callbackId;
     await Geolocation.clearWatch({id});
   }
@@ -37,7 +37,7 @@ class GeolocationSensor extends Sensor {
 
   }
 
-  async onPull(options: GeolocationOptions = {}) {
+  protected async onGet(options: GeolocationOptions = {}) {
     const data = await Geolocation.getCurrentPosition(options);
     return GeolocationSensor.createGeolocationData(data);
   }

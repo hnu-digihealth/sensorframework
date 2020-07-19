@@ -13,6 +13,7 @@ export const config: Config = {
   plugins: [
     sass()
   ],
+  buildEs5: false,
   outputTargets: [
     {
       type: 'dist',

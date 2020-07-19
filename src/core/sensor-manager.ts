@@ -28,17 +28,17 @@ class SensorManager {
 
   }
 
-  public async get(sensorId: string, options?: any): Promise<SampleData> {
+  public async get(sensorId: string, options: any = {}): Promise<SampleData> {
 
     const sensor = this.getSensor(sensorId);
 
     if(sensor != null){
-      return await sensor.pull(options);
+      return await sensor.get(options);
     }
     return null;
   }
 
-  public async watch(sensorId: string, options: any, onChange: (data: SampleData) => void): Promise<SensorListenerHandle>{
+  public async watch(sensorId: string, options: any = {}, onChange: (data: SampleData) => void): Promise<SensorListenerHandle>{
 
     const sensor = this.getSensor(sensorId);
 
@@ -48,7 +48,7 @@ class SensorManager {
     return null;
   }
 
-  public async push(sensorId: string, options: any, data: any): Promise<any>{
+  public async push(sensorId: string, options: any = {}, data: any): Promise<any>{
 
     const sensor = this.getSensor(sensorId);
 
@@ -60,7 +60,7 @@ class SensorManager {
 
   };
 
-  public async record(sensorId: string, options: any): Promise<string> {
+  public async record(sensorId: string, options: any = {}): Promise<string> {
 
     const sensor = this.getSensor(sensorId);
 
@@ -108,7 +108,7 @@ class SensorManager {
 
 }
 
-import {QuestionSysSensorRegistry} from "./sensor-registry";
+import {SensorFrameworkRegistry} from "./sensor-registry";
 
 
-export const QuestionsysSensorManager = new SensorManager(QuestionSysSensorRegistry);
+export const SensorFrameworkManager = new SensorManager(SensorFrameworkRegistry);

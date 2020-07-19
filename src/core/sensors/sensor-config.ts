@@ -3,7 +3,7 @@ export interface SensorConfig {
   name: string;
 
   actions: {
-    pull?: boolean,
+    get?: boolean,
     push?: boolean,
     watch?: boolean,
     record?: boolean
@@ -13,7 +13,7 @@ export interface SensorConfig {
 const SensorDefaultConfig: SensorConfig = {
   name: "Unknown Sensor",
   actions: {
-    pull: false,
+    get: false,
     push: false,
     watch: false,
     record: false
@@ -28,7 +28,7 @@ export const mergeConfig = (config: SensorConfig): SensorConfig => {
     name,
     actions : {
       push: actions.push ? actions.push : SensorDefaultConfig.actions.push,
-      pull: actions.pull ? actions.pull : SensorDefaultConfig.actions.pull,
+      get: actions.get ? actions.get : SensorDefaultConfig.actions.get,
       watch: actions.watch ? actions.watch : SensorDefaultConfig.actions.watch,
       record: actions.record ? actions.record : SensorDefaultConfig.actions.record
     }

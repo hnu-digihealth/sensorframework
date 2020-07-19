@@ -10,7 +10,7 @@ class NetworkStatusSensor extends Sensor {
     super({
       name: "network-status",
       actions: {
-        pull: true,
+        get: true,
         watch: true
       }
     });
@@ -28,7 +28,7 @@ class NetworkStatusSensor extends Sensor {
     });
   }
 
-  async onPull() {
+  async onGet() {
     return await Network.getStatus();
   }
 }
